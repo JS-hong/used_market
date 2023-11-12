@@ -1,0 +1,43 @@
+CREATE TABLE chat_room(
+	chat_room_id	VARCHAR(50)	NOT NULL,
+	product_id	NUMBER		NULL,
+	product_image	VARCHAR(35)	NULL,
+	product_status	VARCHAR(35)	NOT NULL,
+	first_user_id	VARCHAR(20)	NULL,
+	second_user_id	VARCHAR(20)	NULL,
+	create_date	DATE		NULL,
+	chat_room_name	VARCHAR(30)	NULL,
+	CONSTRAINT chat_room_id_pk PRIMARY KEY(chat_room_id)
+);
+
+
+CREATE TABLE participant (
+  participant_id NUMBER(10) PRIMARY KEY,
+  chat_room_id VARCHAR2(50) NOT NULL,
+  user_id VARCHAR2(20),
+  created_at TIMESTAMP,
+  chat_message VARCHAR2(100) NOT NULL,
+  CONSTRAINT participant_chatroom_fk FOREIGN KEY (chat_room_id)
+  REFERENCES chat_room(chat_room_id)
+);
+
+
+//SEQUENCE OR TEIGGER
+
+CREATE SEQUENCE participant_seq
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE;
+
+participant_seq.nextVal()
+
+CREATE OR REPLACE TRIGGER inc_chatcnt
+AFTER INSERT ON chat_room 
+FOR EACH ROW
+DECLARE
+PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+UPDATE product SET chatcnt = chatcnt + 1 WHERE pid = :NEW.product_id;
+COMMIT;
+END;
+/

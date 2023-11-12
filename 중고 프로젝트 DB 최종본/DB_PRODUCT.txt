@@ -1,0 +1,76 @@
+CREATE TABLE product(
+    pid         Number PRIMARY KEY,
+    seller_id   VARCHAR2(30),
+    buyer_id    VARCHAR2(30),
+    cid           NUMBER,
+    price       NUMBER DEFAULT 0,
+    ptitle      VARCHAR2(30),
+    pcontent    VARCHAR2(4000),
+    plocation   VARCHAR2(30),
+    pstate      NUMBER DEFAULT 1,
+    viewcnt     NUMBER DEFAULT 0,
+    chatcnt     NUMBER DEFAULT 0,
+    thumbnail   VARCHAR2(50),
+    pdate        Date
+    );
+
+
+CREATE SEQUENCE productid_seq NOCACHE;
+CREATE SEQUENCE productimgid_seq NOCACHE;
+CREATE SEQUENCE favoriteid_seq NOCACHE;
+CREATE SEQUENCE category_seq NOCACHE;
+
+CREATE TABLE category(
+   cid    NUMBER PRIMARY KEY,
+   cname    VARCHAR(20),
+   cdate   Date
+);
+
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'디지털기기',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'가구/인테리어',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'유아동',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'여성의류',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'여성잡화',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'남성패션/잡화',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'생활가전',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'생활/주방',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'가공식품',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'스포츠/레저',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'취미/게임/음반',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'뷰티/미용',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'식물',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'반려동물용품',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'티켓/교환권',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'도서',SYSDATE);
+INSERT INTO category(cid,cname,cdate) values (category_seq.NEXTVAL,'기타 중고물품',SYSDATE);
+
+ALTER TABLE product
+ADD FOREIGN KEY (cid) REFERENCES category(cid);
+
+CREATE TABLE productimage(
+   pimgid       NUMBER PRIMARY KEY,
+   pid         NUMBER,
+   image_url   VARCHAR2(300),
+   pidate      DATE,
+   FOREIGN KEY (pid) REFERENCES product(pid) ON DELETE CASCADE
+);
+
+ALTER TABLE productimage
+DROP CONSTRAINT SYS_C007180;
+
+ALTER TABLE productimage
+ADD CONSTRAINT SYS_C007180
+FOREIGN KEY (pid)
+REFERENCES product (pid)
+ON DELETE CASCADE;
+
+CREATE TABLE favoriteproduct (
+    fpnum NUMBER PRIMARY KEY,   
+    mid VARCHAR2(255) NOT NULL, 
+    pid NUMBER NOT NULL,       
+    isvalid NUMBER(1) DEFAULT 1,
+    fpdate TIMESTAMP DEFAULT SYSTIMESTAMP, 
+    FOREIGN KEY (mid) REFERENCES member(mid) ON DELETE CASCADE,  
+    FOREIGN KEY (pid) REFERENCES product(pid) ON DELETE CASCADE  
+);
+
